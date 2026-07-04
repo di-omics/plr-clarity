@@ -7,7 +7,7 @@ You capture with the platform's standard sniffer while driving Chorus by hand:
   * Linux  : `usbmon` (cat /sys/kernel/debug/usb/usbmon/Nu > cap.mon) or Wireshark
   * Serial : a COM port sniffer, or a hardware TAP, saved as hex-per-line
 
-This module doesn't reimplement a sniffer - it *ingests* those captures into a
+This module doesn't reimplement a sniffer, it *ingests* those captures into a
 uniform `list[CaptureFrame]` so the correlation and decode stages are
 transport-agnostic. Parsers use pyshark/scapy when present and fall back to a
 tolerant hex-line reader that needs no dependencies.

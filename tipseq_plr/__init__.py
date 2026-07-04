@@ -1,5 +1,5 @@
 """
-tipseq_plr - PyLabRobot automation of (sci)TIP-seq for Hamilton STAR.
+tipseq_plr, PyLabRobot automation of (sci)TIP-seq for Hamilton STAR.
 
 Drives a Hamilton STAR with an Inheco ODTC on-deck thermocycler, a Hamilton
 Heater-Shaker, and a Tecan Infinite 200 Pro reader for QC. Implements the

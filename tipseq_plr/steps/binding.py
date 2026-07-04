@@ -1,5 +1,5 @@
 """
-Stage 1 - targeting: bind cells, antibodies, and pA-Tn5.
+Stage 1, targeting: bind cells, antibodies, and pA-Tn5.
 
 Follows the paper's CUT&Tag front end (conA-bead format, which is what makes the
 run fully deck-resident):

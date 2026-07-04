@@ -26,7 +26,7 @@ from .model import Transport
 
 logger = logging.getLogger("melody.re.replay")
 
-# Commands that physically actuate the instrument - gated behind allow_actuation.
+# Commands that physically actuate the instrument: gated behind allow_actuation.
 ACTUATING = {"prime", "start_sort", "clean", "set_deposition"}
 
 

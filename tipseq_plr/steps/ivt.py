@@ -1,5 +1,5 @@
 """
-Stage 3 - linear amplification: gap-fill then in-vitro transcription.
+Stage 3, linear amplification: gap-fill then in-vitro transcription.
 
     gap-fill:  + Taq 5X master mix, 72C 3 min (fills the transposon gap)
     IVT:       + NTPs, T7 buffer, T7 polymerase, RNase inhibitor; 37C 16-19 h

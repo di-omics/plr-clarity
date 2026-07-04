@@ -21,7 +21,7 @@ from .model import Endpoint, Transport
 logger = logging.getLogger("melody.re.discover")
 
 # Known/guessed BD USB vendor IDs to highlight (BD Biosciences has used 0x1fbd
-# and OEM IDs). Highlighting is a hint only - confirm by unplug/replug diff.
+# and OEM IDs). Highlighting is a hint only: confirm by unplug/replug diff.
 BD_VENDOR_HINTS = {0x1FBD: "BD Biosciences (observed)", 0x0483: "ST/OEM MCU (common in carts)"}
 
 
@@ -74,7 +74,7 @@ def list_serial() -> List[Endpoint]:
 
 def probe_tcp(host: str, ports=(9100, 9600, 8000, 8080, 5025, 62000), timeout=0.4) -> List[Endpoint]:
     """Some BD carts expose a raw-socket control port over Ethernet. Probe a host
-    for a few likely control ports. Only scans the single host you name - this is
+    for a few likely control ports. Only scans the single host you name, this is
     interoperability recon on your own instrument, not a network sweep."""
     out = []
     for port in ports:
@@ -101,7 +101,7 @@ def discover(tcp_host: Optional[str] = None) -> List[Endpoint]:
 
 
 def diff(before: List[Endpoint], after: List[Endpoint]) -> List[Endpoint]:
-    """Endpoints present in `after` but not `before` - the unplug/replug trick to
+    """Endpoints present in `after` but not `before`, the unplug/replug trick to
     isolate the instrument's own link."""
     keys = {e.address for e in before}
     return [e for e in after if e.address not in keys]

@@ -67,7 +67,7 @@ class Command:
 
     `frame_template` is the bytes to send, with `{param}` placeholders filled by
     `params` encoders at send time. `response` is a regex (on hex or ascii) that
-    confirms success. Everything is Optional until decoding fills it in - an
+    confirms success. Everything is Optional until decoding fills it in, an
     undecoded Command still documents intent, which keeps the backend honest.
     """
 

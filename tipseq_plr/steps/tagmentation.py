@@ -1,5 +1,5 @@
 """
-Stage 2 - tagmentation + gDNA recovery.
+Stage 2, tagmentation + gDNA recovery.
 
     Tag buffer (Dig-300 + 10 mM MgCl2), 37C 1 h  -> transposes ME-T7 into DNA
     stop with EDTA, add SDS + proteinase K, 50C 30 min

@@ -1,5 +1,5 @@
 """
-Stage 6 - library QC on the Tecan Infinite 200 Pro.
+Stage 6, library QC on the Tecan Infinite 200 Pro.
 
 Fluorometric dsDNA quantification: transfer a small aliquot of each finished
 library into a black QC plate containing intercalating dye, read Ex485/Em530,

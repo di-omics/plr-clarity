@@ -5,4 +5,4 @@ pylabrobot>=0.1.6            # LiquidHandler + STARBackend, plate_reading, heati
 # sila2>=0.10               # SiLA 2 client for the Inheco ODTC backend
 # pyusb / pylibftdi         # transport for the Hamilton Heater-Shaker, per your setup
 
-# Nothing else is required - QC curve fitting is pure-Python (no numpy dependency).
+# Nothing else is required: QC curve fitting is pure-Python (no numpy dependency).

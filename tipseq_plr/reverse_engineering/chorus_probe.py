@@ -1,10 +1,10 @@
 """
 Stage 2 of the RE playbook: mine the OEM software's own layer.
 
-Rick's highest-leverage trick on the Hamilton was not sniffing wires first - it
+Rick's highest-leverage trick on the Hamilton was not sniffing wires first, it
 was reading Venus's *trace logs*, which already contain the firmware command
 strings. The FACSMelody analog is **BD FACSChorus** on its Windows workstation:
-before touching USB, harvest what Chorus already writes down -
+before touching USB, harvest what Chorus already writes down:
 
   * its log / trace files (often contain command + status strings verbatim),
   * its local experiment database (gates, sort settings, worklists),

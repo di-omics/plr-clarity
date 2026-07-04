@@ -6,7 +6,7 @@ the [BD FACSMelody](https://www.bdbiosciences.com) drive that sort automatically
 so the pipeline runs closed-loop.
 
 It applies the methodology **Rick Wierenga** used to build PyLabRobot's device
-backends: don't invent a protocol - work down to the OEM's own command layer,
+backends: don't invent a protocol, work down to the OEM's own command layer,
 sniff the OEM↔device traffic, correlate each UI action to its bytes, decode the
 framing, and replay with PyUSB/pyserial before wrapping it in a backend. (See
 his talk *"How To Reverse Engineer Lab Equipment"* and the
@@ -28,12 +28,12 @@ index-sorting (recording which cell landed where). So the target is small:
 3. programmatic **trigger + status polling + clean**.
 
 That means we mostly need to reverse-engineer *how to trigger a saved template
-and move plates* - not BD's gating math. The required command set is exactly
+and move plates*, not BD's gating math. The required command set is exactly
 `REQUIRED_COMMANDS` in [`model.py`](../tipseq_plr/reverse_engineering/model.py):
 `connect, get_status, load_template, set_deposition, prime, start_sort,
 wait_complete, abort, clean`.
 
-## Stage 1 - find the link (`discover`)
+## Stage 1: find the link (`discover`)
 
 The Melody talks to the Chorus workstation over USB and/or an Ethernet cart link.
 Enumerate everything, unplug/replug the instrument, and diff to isolate its link.
@@ -46,9 +46,9 @@ python -m tipseq_plr.reverse_engineering.cli discover --tcp-host <chorus-or-cart
 candidates, flagging likely BD vendor IDs. Note the endpoint (e.g.
 `usb:0x1fbd:0x0002`).
 
-## Stage 2 - mine Chorus first (`chorus`)
+## Stage 2: mine Chorus first (`chorus`)
 
-Rick's highest-leverage move on the STAR wasn't the wire - it was **Venus's own
+Rick's highest-leverage move on the STAR wasn't the wire, it was **Venus's own
 trace logs**, which print the firmware strings verbatim. The Melody analog is
 **FACSChorus**. Run this **on the Chorus PC**:
 
@@ -57,12 +57,12 @@ python -m tipseq_plr.reverse_engineering.cli chorus --root "C:/ProgramData/BD" "
 ```
 
 It finds Chorus processes, listening localhost ports (the UI may talk to a local
-control daemon - a cleaner hook than USB), log/trace files, the local experiment
+control daemon, a cleaner hook than USB), log/trace files, the local experiment
 **database**, and experiment files. It greps logs for command/status lines. If
 Chorus logs the bytes or exposes a localhost service, you may not need to sniff
 USB at all.
 
-## Stage 3 - capture while you drive (Wireshark/USBPcap/usbmon)
+## Stage 3: capture while you drive (Wireshark/USBPcap/usbmon)
 
 Start your platform sniffer on the Melody's interface, then drive Chorus by hand.
 
@@ -70,11 +70,11 @@ Start your platform sniffer on the Melody's interface, then drive Chorus by hand
 - **Linux:** `usbmon` or Wireshark.
 - **Serial:** a COM sniffer saved as `<ts> <dir> <hexbytes>` lines.
 
-The toolkit *ingests* these - it doesn't reimplement a sniffer. Parsers:
+The toolkit *ingests* these, it doesn't reimplement a sniffer. Parsers:
 `capture.from_pcap` (pyshark/scapy), `capture.from_hexdump` (no deps),
 `capture.from_chorus_log`.
 
-## Stage 4 - one action at a time (`mark` -> `decode`)
+## Stage 4: one action at a time (`mark` -> `decode`)
 
 The core trick: perform **one discrete Chorus action**, mark the instant, and
 look only at the bytes in that window. Diff windows to cancel the periodic
@@ -97,15 +97,15 @@ python -m tipseq_plr.reverse_engineering.cli decode \
     --transport usb --endpoint usb:0x1fbd:0x0002 --out protocol.json
 ```
 
-`decode` reports **coverage** - which required commands are decoded and which
+`decode` reports **coverage**, which required commands are decoded and which
 still aren't. Parameters (cells/well, well count) are found by varying **one**
 setting in Chorus and diffing the frames; wire their encoders into
 `bd_facsmelody._encode_param`.
 
-## Stage 5 - confirm safely (`replay`)
+## Stage 5: confirm safely (`replay`)
 
 ⚠️ The Melody is a laser + pressurized-fluidics instrument. Replay defaults are
-deliberately timid - **two independent safety switches, both off by default**:
+deliberately timid, **two independent safety switches, both off by default**:
 
 - `--armed` opens the link; without it, `replay` is pure dry-run (logs bytes).
 - `--live` actually transmits; needs `--armed` too.
@@ -124,7 +124,7 @@ python -m tipseq_plr.reverse_engineering.cli replay --protocol protocol.json \
 Only once `get_status` round-trips cleanly do you touch actuating commands, with
 BD service or your safety officer in the loop.
 
-## Stage 6 - run it closed-loop
+## Stage 6: run it closed-loop
 
 Point the pipeline at the decoded protocol:
 
@@ -139,7 +139,7 @@ cfg = RunConfig(
 )
 ```
 
-Now `TipSeqProtocol._facs_handoff` drives `sort_to_plate` instead of raising -
+Now `TipSeqProtocol._facs_handoff` drives `sort_to_plate` instead of raising:
 the STAR pools index-1, hands the tube + index-2 plate to the Melody (via arm or
 plate hotel), the sort runs, and the STAR resumes into IVT. `BDFACSMelodyBackend`
 **refuses to start** if any required command is still undecoded, so a half-mapped
@@ -148,7 +148,7 @@ protocol can never drive live hardware.
 ## Physical bridge (still required)
 
 Software control ≠ full autonomy. You still need to move a **sample tube onto the
-SIP** and the **index-2 plate on/off the deposition stage** - a bench cobot (UR
+SIP** and the **index-2 plate on/off the deposition stage**, a bench cobot (UR
 or similar) or a shared plate hotel. And expose the sorter's **clog/error status**
 as an interlock: a clogged nozzle silently ruins a plate.
 
@@ -156,7 +156,7 @@ as an interlock: a clogged nozzle silently ruins a plate.
 
 Reverse-engineering a closed BD sorter is real work. If the Melody isn't sacred,
 an **API-controllable single-cell dispenser** (cellenONE, WOLF G2, Namocell Hana)
-does the same job - doublet exclusion + count-controlled plate deposition - with
+does the same job, doublet exclusion + count-controlled plate deposition, with
 a documented interface and none of this RE. The orchestrator change is identical:
 `sorter` becomes a different backend behind the same `sort_to_plate` call. Gate
 the go/no-go after Stage 2, once you know how open Chorus really is.

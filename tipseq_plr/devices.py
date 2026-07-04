@@ -40,7 +40,7 @@ class HeaterShakerDevice:
         if self.cfg.simulate:
             logger.info("[sim] heater-shaker ready")
             return
-        # Real path - pick the module you have installed:
+        # Real path: pick the module you have installed:
         #   from pylabrobot.heating_shaking import HeaterShaker
         #   from pylabrobot.heating_shaking import HamiltonHeaterShakerBackend
         #   self._backend = HamiltonHeaterShakerBackend(index=..., com=self.cfg.hhs_com)

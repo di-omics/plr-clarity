@@ -10,7 +10,7 @@ State of honesty:
   * `simulate=True` fakes the whole sort so the pipeline runs end-to-end today.
   * `simulate=False` requires a ProtocolMap in which the required commands are
     decoded. If they aren't, setup() fails loudly and tells you which RE stage is
-    still missing - the backend never pretends to drive hardware it can't.
+    still missing, the backend never pretends to drive hardware it can't.
 
 The command set the sort needs is the REQUIRED_COMMANDS list in the RE model:
 connect, get_status, load_template, set_deposition, prime, start_sort,

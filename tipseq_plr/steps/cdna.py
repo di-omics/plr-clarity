@@ -1,5 +1,5 @@
 """
-Stage 4 - cDNA synthesis from the T7 RNA.
+Stage 4, cDNA synthesis from the T7 RNA.
 
     first-strand: anneal random hexamer (70C 3 min), MMLV RT (22C 10' / 42C 60' /
                   70C 10'), then RNase H (37C 20 min)

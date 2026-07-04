@@ -2,13 +2,13 @@
 
 Automated **(sci)TIP-seq** on a **Hamilton STAR**, written in [PyLabRobot](https://docs.pylabrobot.org).
 
-Turns the published protocol -
+Turns the published protocol:
 
 > Bartlett, Dileep, Handa, Ohkawa, Kimura, Henikoff, Gilbert (2021).
 > *High-throughput single-cell epigenomic profiling by targeted insertion of promoters (TIP-seq).*
 > **J Cell Biol** 220(12):e202103078. https://doi.org/10.1083/jcb.202103078
 
-- into an end-to-end, deck-resident method that a robot runs unattended, from bead-bound cells through a sequence-ready, QC'd library plate.
+into an end-to-end, deck-resident method that a robot runs unattended, from bead-bound cells through a sequence-ready, QC'd library plate.
 
 Instruments driven:
 
@@ -22,7 +22,7 @@ Instruments driven:
 
 ## Run it now (no hardware)
 
-Everything runs in **simulation** with zero hardware and zero external drivers - PyLabRobot doesn't even need to be installed (it falls back to a logging "dry" mode). With PyLabRobot installed, simulation routes through its chatterbox backend so you see every atomic aspirate/dispense.
+Everything runs in **simulation** with zero hardware and zero external drivers, PyLabRobot doesn't even need to be installed (it falls back to a logging "dry" mode). With PyLabRobot installed, simulation routes through its chatterbox backend so you see every atomic aspirate/dispense.
 
 ```bash
 # dry-run the fully-autonomous plate TIP-seq for 96 samples
@@ -46,7 +46,7 @@ The protocol is six deck-resident stages (`tipseq_plr/steps/`):
 
 | Stage | Module | Paper section |
 |---|---|---|
-| 0 preload | - | cells harvested/permeabilized, aliquoted per well (off-deck) |
+| 0 preload |, | cells harvested/permeabilized, aliquoted per well (off-deck) |
 | 1 targeting | `binding.py` | conA capture -> primary Ab -> secondary Ab -> pA-Tn5 (T7 transposon) |
 | 2 tagmentation | `tagmentation.py` | 37 °C tagment -> EDTA stop -> SDS/proteinase K -> SPRI |
 | 3 linear amp | `ivt.py` | gap-fill (72 °C) -> T7 IVT (37 °C, ~17 h) -> RNA SPRI |
@@ -58,17 +58,17 @@ Every volume, temperature, and incubation time lives in `config.py`, each tracea
 
 ## The one honest caveat: FACS
 
-`sciTIP-seq` combinatorial indexing requires a **FACS re-distribution of pooled cells between index 1 and index 2** - that's why the published sci method omits conA beads. **A STAR cannot sort cells.** So:
+`sciTIP-seq` combinatorial indexing requires a **FACS re-distribution of pooled cells between index 1 and index 2**, that's why the published sci method omits conA beads. **A STAR cannot sort cells.** So:
 
 - **`plate_tipseq` / `bulk_tipseq`** keep cells on conA beads the whole way -> every separation is a magnet step -> **fully autonomous, one shot.** This is the recommended production path for up to 96 barcoded samples/targets in parallel.
 - **`scitip_seq`** runs index-1 tagmentation on deck, then hits the FACS boundary. Three ways it resolves:
   - **Manual (default):** on hardware it raises `FacsHandoffRequired`; an operator sorts the pool into the index-2 plate and calls `proto.resume_after_facs()`.
-  - **Automated (`sorter_enabled=True`):** the boundary drives a **BD FACSMelody** sort-to-plate via a reverse-engineered `ProtocolMap` - closed-loop, no human.
+  - **Automated (`sorter_enabled=True`):** the boundary drives a **BD FACSMelody** sort-to-plate via a reverse-engineered `ProtocolMap`, closed-loop, no human.
   - **Simulation:** prints the boundary and continues so you can validate the whole flow.
 
-This is a property of the assay, not the code. If you want a single-tube high-plex path with no sort, that's a protocol redesign (e.g. droplet or split-pool without live-cell sorting) - flagged, not hidden.
+This is a property of the assay, not the code. If you want a single-tube high-plex path with no sort, that's a protocol redesign (e.g. droplet or split-pool without live-cell sorting), flagged, not hidden.
 
-### Closing the FACS gap - the reverse-engineering toolkit
+### Closing the FACS gap: the reverse-engineering toolkit
 
 `tipseq_plr/reverse_engineering/` is a staged harness that applies **Rick Wierenga's PyLabRobot methodology** (work to the OEM command layer -> sniff OEM↔device traffic -> correlate each UI action to its bytes -> decode framing -> replay via PyUSB/serial) to the BD FACSMelody + FACSChorus. Its output is a `ProtocolMap` the `BDFACSMelodyBackend` loads. Replay is guarded by two independent safety switches (`--armed`, `--live`) plus an `--allow-actuation` gate for anything that moves fluid or fires a sort, and the backend **refuses to run a live sort until every required command is decoded.** Full playbook: [docs/facs-melody-re.md](docs/facs-melody-re.md).
 
@@ -92,7 +92,7 @@ python -m tipseq_plr.reverse_engineering.cli coverage --protocol protocol.json
    - `devices.py::HeaterShakerDevice.setup` -> instantiate `HamiltonHeaterShakerBackend` or `InhecoThermoShakeBackend`.
 4. Run with `--no-simulate` and your device addresses (`--` flags map to `RunConfig`: `odtc_host/port`, `hhs_com`, `tecan_host`).
 
-Nothing about the biochemistry sequencing changes between sim and hardware - only the backend transport.
+Nothing about the biochemistry sequencing changes between sim and hardware, only the backend transport.
 
 ## Architecture
 
@@ -125,16 +125,16 @@ docs/facs-melody-re.md  reverse-engineering playbook
 tests/               dry-mode smoke + logic tests (protocol + RE toolkit)
 ```
 
-Design rules: step code never imports a vendor backend or branches on sim/real - it only calls `devices.py` wrappers and `LiquidOps`. Swapping an instrument is a one-line change in `build_devices`.
+Design rules: step code never imports a vendor backend or branches on sim/real, it only calls `devices.py` wrappers and `LiquidOps`. Swapping an instrument is a one-line change in `build_devices`.
 
 ## Status
 
 - ✅ End-to-end simulation of all three methods, 8-96 samples (incl. sci with a simulated FACSMelody sort).
 - ✅ Reagent prep sheet + labware checklist generation.
 - ✅ dsDNA QC with standard-curve fit and pass/dilute/fail gating.
-- ✅ FACSMelody RE toolkit: transport discovery, capture ingest, action->byte correlation, framing/checksum decode, guarded replay - all runnable offline.
+- ✅ FACSMelody RE toolkit: transport discovery, capture ingest, action->byte correlation, framing/checksum decode, guarded replay, all runnable offline.
 - 🔌 ODTC, Tecan, and FACSMelody backends are interface-complete shims; the Melody `ProtocolMap` is produced by running the RE playbook against your instrument.
-- 🧪 Not yet wet-lab validated. Treat as a method to dry-run, review, and adapt - not a validated SOP.
+- 🧪 Not yet wet-lab validated. Treat as a method to dry-run, review, and adapt, not a validated SOP.
 
 ## License
 

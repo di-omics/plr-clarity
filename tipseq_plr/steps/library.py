@@ -1,5 +1,5 @@
 """
-Stage 5 - library construction: fragment, index, size-select.
+Stage 5, library construction: fragment, index, size-select.
 
     fragmentation: + TAPS buffer + ME-B-only Tn5, 55C 6 min; quench with 4 M GuHCl
     purify:        2.0x SPRI, elute in 16 uL, discard beads (fresh eluate now)

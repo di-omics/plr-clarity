@@ -2,10 +2,10 @@
 Stage 5 of the RE playbook: decode the framing and build the ProtocolMap.
 
 Given the action-specific frames from correlation, work out the structure:
-  * framing      - fixed length? terminator byte(s)? length-prefixed?
-  * opcode       - the longest common prefix across a command's frames
-  * parameters   - the bytes that vary when you change one thing (cells/well, well)
-  * checksum     - brute-force common schemes over candidate byte ranges
+  * framing     : fixed length? terminator byte(s)? length-prefixed?
+  * opcode      : the longest common prefix across a command's frames
+  * parameters  : the bytes that vary when you change one thing (cells/well, well)
+  * checksum    : brute-force common schemes over candidate byte ranges
 
 None of this assumes BD's specific scheme; it proposes hypotheses and shows their
 evidence so a human confirms before anything is replayed to a live sorter.
@@ -24,7 +24,7 @@ logger = logging.getLogger("melody.re.decode")
 
 # -- framing -----------------------------------------------------------------
 def guess_terminator(frames: List[CaptureFrame]) -> Optional[bytes]:
-    """Most common trailing 1-2 bytes across frames - the likely terminator."""
+    """Most common trailing 1-2 bytes across frames, the likely terminator."""
     if not frames:
         return None
     tails1 = Counter(f.data[-1:] for f in frames if f.data)

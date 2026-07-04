@@ -97,10 +97,10 @@ class TipSeqProtocol:
         try:
             await self.preload_cells()
 
-            # Stage 1 - targeting
+            # Stage 1: targeting
             await binding.run(self.ops, barcoded=self._sci)
 
-            # Stage 2 - tagmentation (sci defers gDNA purify until after FACS)
+            # Stage 2: tagmentation (sci defers gDNA purify until after FACS)
             await tagmentation.run(self.ops, purify=not self._sci)
 
             if self._sci:
@@ -108,12 +108,12 @@ class TipSeqProtocol:
                 # after sorting into the index-2 plate, purify gDNA then continue
                 await tagmentation.purify_gdna(self.ops)
 
-            # Stage 3-5 - amplification, cDNA, library
+            # Stage 3-5: amplification, cDNA, library
             await ivt.run(self.ops)
             await cdna.run(self.ops)
             await library.run(self.ops)
 
-            # Stage 6 - QC
+            # Stage 6: QC
             report = await qc.run(self.ops)
             report["method"] = cfg.method.value
             report["samples"] = cfg.num_samples
