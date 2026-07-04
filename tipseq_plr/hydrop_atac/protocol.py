@@ -130,11 +130,26 @@ class HyDropATAC:
         logger.info("== nuclei prep (lyse -> wash -> resuspend) ==")
         await self.ops.add(H.ATAC_LYSIS, cfg.volumes.lysis_ul)
         await _sleep(cfg.timings.lysis_s, self.rc)          # 5 min on ice
-        await self.ops.add(H.ATAC_WASH, cfg.volumes.wash_ul)
-        logger.info("centrifuge 500g 5 min 4C (integrated VSpin or off-deck spin)")
-        await self.ops.remove_supernatant(cfg.volumes.wash_ul)
+        if cfg.nuclei_preconcentrated:
+            logger.info("nuclei pre-concentrated; skipping wash/spin")
+        else:
+            await self.ops.add(H.ATAC_WASH, cfg.volumes.wash_ul)
+            await self._spin(cfg.spin_rcf_g, cfg.spin_seconds, cfg.spin_temperature_c)
+            await self.ops.remove_supernatant(cfg.volumes.wash_ul)
         await self.ops.add(H.PBS, cfg.volumes.pbs_resuspend_ul)
         logger.info("filter 40 um strainer (manual or integrated) before tagmentation")
+
+    async def _spin(self, rcf_g: float, seconds: int, temp_c: float):
+        """Pellet nuclei. Deck-integrated VSpin loads via the STAR gripper; if no
+        centrifuge is configured, fall back to an off-deck spin note."""
+        cf = self.devices.centrifuge
+        if cf is None:
+            logger.info("centrifuge %.0fg %ds %.0fC (off-deck spin; or enable VSpin)",
+                        rcf_g, seconds, temp_c)
+            return
+        # STAR iSWAP loads the plate into the VSpin; balance with a counterweight.
+        cf.declare_balanced(True)
+        await cf.spin(rcf_g, seconds, temperature_c=temp_c)
 
     async def tagmentation(self):
         from . import config as H
@@ -305,4 +320,7 @@ def _as_run_config(cfg: HyDropConfig):
     setattr(rc, "onyx_host", cfg.onyx_host)
     setattr(rc, "onyx_transport", cfg.onyx_transport)
     setattr(rc, "onyx_armed", False)           # sim-safe
+    # deck-integrated VSpin for the nuclei spin (unless nuclei are pre-concentrated)
+    setattr(rc, "centrifuge_enabled", cfg.centrifuge_enabled and not cfg.nuclei_preconcentrated)
+    setattr(rc, "vspin_host", cfg.vspin_host)
     return rc

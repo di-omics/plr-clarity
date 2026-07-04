@@ -135,13 +135,14 @@ tipseq_plr/
   config.py          all parameters (volumes/temps/times), paper-traceable, no PLR import
   deck.py            STAR deck layout; labware pinning; version-tolerant fallbacks
   reagents.py        reagent -> reservoir map; prep-sheet planner; dead-volume guard
-  devices.py         uniform async wrappers over STAR / HHS / ODTC / reader / magnet / arm / onyx
+  devices.py         uniform async wrappers over STAR / HHS / ODTC / reader / magnet / arm / onyx / vspin
   backends/
     inheco_odtc.py   SiLA-ready ODTC thermocycler backend (+ simulation)
     tecan_pro200.py  Tecan Infinite 200 Pro reader backend (+ simulation)
     bd_facsmelody.py BD FACSMelody sorter backend; loads a decoded ProtocolMap
     robot_arm.py     generic PLR-driven inter-instrument arm (taught sites, gated)
     droplet_genomics_onyx.py  Onyx droplet-generation backend (+ simulation)
+    vspin.py         VSpin centrifuge backend; deck-integrated, balance-guarded
   reverse_engineering/   FACSMelody RE toolkit (Rick Wierenga methodology)
     model.py         Command / ProtocolMap / CaptureFrame data model
     transport_discovery.py  find the USB/serial/TCP link

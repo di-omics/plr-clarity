@@ -74,14 +74,18 @@ report = asyncio.run(HyDropATAC(HyDropConfig(num_samples=8, simulate=True)).run(
 2. Wire the arm SDK in `RobotArmBackend.setup` and set `arm_motion_enabled=True`.
 3. Wire the Onyx control interface (or its reverse-engineered `ProtocolMap`) in
    `OnyxBackend`, set `onyx_armed=True`, and tune the per-inlet pressures per chip.
-4. Confirm the pelleting steps: HyDrop nuclei washes use centrifugation (500g),
-   which needs an integrated plate centrifuge (for example a Hamilton-integrated
-   VSpin) or an off-deck spin. These are flagged in the protocol log.
+4. The one spin (nuclei wash/concentration, 500g) is handled on deck by an
+   integrated **VSpin** (`backends/vspin.py`), loaded by the STAR gripper. It is
+   enabled by default (`centrifuge_enabled=True`); set `nuclei_preconcentrated=True`
+   to skip it when nuclei arrive already concentrated in the tagmentation volume.
+   Wire PyLabRobot's VSpin backend in `VSpinBackend.setup`, and note the balance
+   guard: a live spin refuses unless a counterbalance is declared.
 
 ## What is honest here
 
-The biochemistry sequence and volumes are traceable to the paper. The arm and
-Onyx backends are interface-complete shims with simulation, not yet wired to
+The biochemistry sequence and volumes are traceable to the paper. The arm, Onyx,
+and VSpin backends are interface-complete shims with simulation, not yet wired to
 hardware, and the workflow is not wet-lab validated. It is a dry-runnable,
-reviewable method that drops onto a taught robotic cell once the two backends are
-connected. The centrifugation steps are the main non-deck dependency to resolve.
+reviewable method that drops onto a taught robotic cell once the backends are
+connected. With the VSpin integrated (or `nuclei_preconcentrated=True`), the whole
+workflow is deck-resident: no off-deck steps remain.

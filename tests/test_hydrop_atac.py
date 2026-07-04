@@ -2,7 +2,7 @@
 
 import asyncio
 
-from tipseq_plr.backends import DropletParams, OnyxBackend, RobotArmBackend, Site
+from tipseq_plr.backends import DropletParams, OnyxBackend, RobotArmBackend, Site, VSpinBackend
 from tipseq_plr.hydrop_atac import HyDropATAC, HyDropConfig
 
 
@@ -75,3 +75,29 @@ def test_low_n_and_multicolumn_shapes():
     for n in (1, 8, 16, 24):
         r = asyncio.run(HyDropATAC(_cfg(num_samples=n)).run())
         assert r["libraries"] == n
+
+
+def test_vspin_present_by_default_absent_when_preconcentrated():
+    assert HyDropATAC(_cfg(num_samples=8)).devices.centrifuge is not None
+    assert HyDropATAC(_cfg(num_samples=8, nuclei_preconcentrated=True)).devices.centrifuge is None
+
+
+def test_vspin_spins_in_sim():
+    vs = VSpinBackend(simulate=True)
+
+    async def go():
+        await vs.setup()
+        await vs.spin(500, 300, temperature_c=4.0)
+        return True
+    assert asyncio.run(go())
+
+
+def test_vspin_refuses_unbalanced_live():
+    vs = VSpinBackend(simulate=False, require_balance=True)
+    # skip setup() (would need hardware); balance guard is independent
+    raised = False
+    try:
+        asyncio.run(vs.spin(500, 300))
+    except RuntimeError:
+        raised = True
+    assert raised

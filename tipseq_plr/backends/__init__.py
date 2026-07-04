@@ -3,6 +3,7 @@ from .tecan_pro200 import TecanPro200Backend
 from .bd_facsmelody import BDFACSMelodyBackend
 from .robot_arm import RobotArmBackend, Site
 from .droplet_genomics_onyx import OnyxBackend, DropletParams
+from .vspin import VSpinBackend
 
 __all__ = [
     "InhecoODTCBackend",
@@ -13,4 +14,5 @@ __all__ = [
     "Site",
     "OnyxBackend",
     "DropletParams",
+    "VSpinBackend",
 ]

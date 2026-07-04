@@ -26,6 +26,7 @@ from .backends import (
     OnyxBackend,
     RobotArmBackend,
     TecanPro200Backend,
+    VSpinBackend,
 )
 from .config import RunConfig
 
@@ -121,6 +122,7 @@ class Devices:
     sorter: Optional[BDFACSMelodyBackend] = None   # BD FACSMelody, sci path only
     arm: Optional[RobotArmBackend] = None          # inter-instrument bridge
     onyx: Optional[OnyxBackend] = None             # Onyx droplet generator (HyDrop)
+    centrifuge: Optional[VSpinBackend] = None      # VSpin, deck-integrated
 
     async def setup(self):
         if self.lh is not None:
@@ -128,12 +130,12 @@ class Devices:
         await self.hs.setup()
         await self.tc.setup()
         await self.reader.setup()
-        for opt in (self.sorter, self.arm, self.onyx):
+        for opt in (self.sorter, self.arm, self.onyx, self.centrifuge):
             if opt is not None:
                 await opt.setup()
-        logger.info("all devices ready (simulate=%s, sorter=%s, arm=%s, onyx=%s)",
-                    self.cfg.simulate, self.sorter is not None,
-                    self.arm is not None, self.onyx is not None)
+        logger.info("all devices ready (simulate=%s, sorter=%s, arm=%s, onyx=%s, vspin=%s)",
+                    self.cfg.simulate, self.sorter is not None, self.arm is not None,
+                    self.onyx is not None, self.centrifuge is not None)
 
     async def stop(self):
         for closer in (
@@ -143,6 +145,7 @@ class Devices:
             lambda: self.sorter.stop() if self.sorter is not None else _noop(),
             lambda: self.arm.stop() if self.arm is not None else _noop(),
             lambda: self.onyx.stop() if self.onyx is not None else _noop(),
+            lambda: self.centrifuge.stop() if self.centrifuge is not None else _noop(),
             lambda: self.lh.stop() if self.lh is not None else _noop(),
         ):
             try:
@@ -216,8 +219,15 @@ def build_devices(cfg: RunConfig, deckmap) -> Devices:
             armed=getattr(cfg, "onyx_armed", False),
             sim_time_scale=scale,
         )
+    centrifuge = None
+    if getattr(cfg, "centrifuge_enabled", False):
+        centrifuge = VSpinBackend(
+            host=getattr(cfg, "vspin_host", "COM5"),
+            simulate=cfg.simulate,
+            sim_time_scale=scale,
+        )
     return Devices(lh=lh, hs=hs, tc=tc, reader=reader, magnet=magnet, cfg=cfg,
-                   sorter=sorter, arm=arm, onyx=onyx)
+                   sorter=sorter, arm=arm, onyx=onyx, centrifuge=centrifuge)
 
 
 def _build_liquid_handler(cfg: RunConfig, deckmap):

@@ -117,6 +117,17 @@ class HyDropConfig:
     target_cells: int = 3000
     simulate: bool = True
 
+    # Nuclei concentration/wash. The one spin HyDrop wants is here. A deck-
+    # integrated VSpin keeps it on deck; set nuclei_preconcentrated=True to skip
+    # it entirely when nuclei arrive already concentrated in the tagmentation
+    # volume (dilution-quench lysis or an upstream prep).
+    centrifuge_enabled: bool = True
+    nuclei_preconcentrated: bool = False
+    vspin_host: str = "COM5"
+    spin_rcf_g: float = 500.0
+    spin_seconds: int = 5 * 60
+    spin_temperature_c: float = 4.0
+
     # device addressing (live only)
     star_id: str = "STAR"
     odtc_host: str = "192.168.1.50"
