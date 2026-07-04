@@ -101,6 +101,7 @@ PCR_MASTERMIX = "nebnext_2x_pcr"       # NEB M0541
 INDEX_I5 = "index_i5_primers"          # scT7_S5XX (sci) or Nextera i5
 INDEX_I7 = "index_i7_primers"          # Nextera i7
 QUANT_DYE = "dsdna_quant_dye"          # intercalating dsDNA dye for Tecan quant (e.g. PicoGreen)
+QUBIT_HS_WS = "qubit_hs_working_solution"  # Qubit dsDNA HS reagent 1:200 in HS buffer
 
 
 @dataclass

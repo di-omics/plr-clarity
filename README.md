@@ -80,6 +80,28 @@ python -m tipseq_plr.reverse_engineering.cli decode --capture cap.pcapng --marks
 python -m tipseq_plr.reverse_engineering.cli coverage --protocol protocol.json
 ```
 
+## Plate normalization (Qubit HS)
+
+A standalone, shippable protocol: quantify a 96-well source plate and normalize it to a uniform concentration. Independent of the TIP-seq flow, it reuses the same STAR deck and Tecan backend.
+
+Flow: **12 uL source plate -> high-sensitivity Qubit dsDNA prep (2 uL aliquot into a black assay plate) -> Tecan read (Ex485/Em530) + standard curve -> per-well concentration -> normalize sample + water into a destination plate** at a target concentration and volume.
+
+```bash
+# normalize 96 wells to 1 ng/uL in 20 uL, from a 12 uL source plate
+python -m tipseq_plr.normalization.run --samples 96 --target 1.0 --final 20 --simulate -v
+python -m tipseq_plr.normalization.run --report norm.json     # full per-well plan as JSON
+```
+
+The normalization math ([`normalization/plan.py`](tipseq_plr/normalization/plan.py)) is a pure, unit-tested function. Each well is classified: `ok` (hits target exactly), `capped_low` (too dilute to reach target in the final volume, transfers max available and flags it), `needs_predilution` (so concentrated the ideal transfer is below the smallest reliable volume), or `empty`. Volume is always conserved (`sample + water == final`). Nothing is silently mis-normalized: out-of-range wells are reported, not hidden.
+
+```python
+from tipseq_plr.normalization import NormConfig, PlateNormalization
+import asyncio
+cfg = NormConfig(num_samples=96, source_volume_ul=12.0,
+                 target_ng_per_ul=1.0, final_volume_ul=20.0, simulate=True)
+report = asyncio.run(PlateNormalization(cfg).run())   # -> counts + per-well plan
+```
+
 ## Going live
 
 `--simulate` is the default and everything above is real PyLabRobot API surface. To run on hardware:
@@ -119,6 +141,11 @@ tipseq_plr/
     common.py        LiquidOps: column-wise pipetting, SPRI cleanup, magnet washes
     thermal.py       heater-shaker holds + ODTC ramp programs
     binding.py ... qc.py   the six stages
+  normalization/     standalone Qubit HS quant + 96-well normalization protocol
+    config.py        NormConfig / QubitHS assay parameters
+    plan.py          pure normalization math (per-well sample/water plan)
+    protocol.py      PlateNormalization: assay prep -> read -> quantify -> transfer
+    run.py           CLI
   protocol.py        TipSeqProtocol orchestrator (incl. FACS handoff / sorter)
   run.py             CLI
 docs/facs-melody-re.md  reverse-engineering playbook

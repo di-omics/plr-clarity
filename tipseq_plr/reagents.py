@@ -34,6 +34,7 @@ _LAYOUT = {
     C.GUHCL:           ("buffers", 1, "6"),
     C.CONA_BEADS:      ("buffers", 2, "1"),
     C.QUANT_DYE:       ("buffers", 2, "2"),
+    C.QUBIT_HS_WS:     ("buffers", 2, "3"),
     # enzymes carrier (chilled)
     C.PROTEINASE_K:    ("enzymes", 0, "1"),
     C.TAQ_5X:          ("enzymes", 0, "2"),
