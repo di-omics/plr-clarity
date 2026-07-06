@@ -54,6 +54,16 @@ _LAYOUT = {
     C.PCR_MASTERMIX:   ("enzymes", 2, "4"),
     C.INDEX_I5:        ("enzymes", 3, "1"),  # i5 lives in an index plate for sci
     C.INDEX_I7:        ("enzymes", 3, "2"),
+    # NEBNext Ultra II DNA (UMI) kit: enzyme mixes chilled, TE/dilution at RT
+    C.ULTRA2_END_PREP_BUFFER:   ("enzymes", 3, "3"),
+    C.ULTRA2_END_PREP_ENZYME:   ("enzymes", 3, "4"),
+    C.ULTRA2_LIGATION_MM:       ("enzymes", 3, "5"),
+    C.ULTRA2_LIGATION_ENHANCER: ("enzymes", 4, "1"),
+    C.UMI_ADAPTOR:              ("enzymes", 4, "2"),
+    C.ULTRA2_Q5_MM:             ("enzymes", 4, "3"),
+    C.NEBNEXT_UDI_PRIMERS:      ("enzymes", 4, "4"),
+    C.UMI_DILUTION_BUFFER:      ("buffers", 2, "4"),
+    C.TE_0_1X:                  ("buffers", 2, "5"),
 }
 
 _DEAD_VOLUME_UL = 20.0     # per reservoir well, don't aspirate below this

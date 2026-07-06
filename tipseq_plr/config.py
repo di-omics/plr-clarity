@@ -106,6 +106,18 @@ INDEX_I7 = "index_i7_primers"          # Nextera i7
 QUANT_DYE = "dsdna_quant_dye"          # intercalating dsDNA dye for Tecan quant (e.g. PicoGreen)
 QUBIT_HS_WS = "qubit_hs_working_solution"  # Qubit dsDNA HS reagent 1:200 in HS buffer
 
+# NEBNext Ultra II DNA Library Prep (UMI) kit reagents (NEB #E7645 / #E7103).
+# Used by protocols/dna_ultra2_umi. Enzyme mixes ride the chilled enzymes carrier.
+ULTRA2_END_PREP_BUFFER = "ultra2_end_prep_buffer"        # green cap
+ULTRA2_END_PREP_ENZYME = "ultra2_end_prep_enzyme"        # green cap
+ULTRA2_LIGATION_MM = "ultra2_ligation_master_mix"        # red cap (very viscous)
+ULTRA2_LIGATION_ENHANCER = "ultra2_ligation_enhancer"    # red cap
+UMI_ADAPTOR = "nebnext_umi_adaptor"                      # UDI UMI adaptor, diluted per input
+UMI_DILUTION_BUFFER = "umi_adaptor_dilution_buffer"      # for the adaptor dilution table
+ULTRA2_Q5_MM = "ultra2_q5_master_mix"                    # blue cap
+NEBNEXT_UDI_PRIMERS = "nebnext_udi_primer_mix"           # blue cap, i5/i7 UDI primers
+TE_0_1X = "te_0_1x"                                      # 0.1X TE elution (1 mM Tris, 0.1 mM EDTA)
+
 
 @dataclass
 class Volumes:

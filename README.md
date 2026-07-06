@@ -30,6 +30,7 @@ Every runnable method lives under **[`tipseq_plr/protocols/`](tipseq_plr/protoco
 | **CUT&Tag** | [`protocols/cut_and_tag/`](tipseq_plr/protocols/cut_and_tag) | chromatin profiling (Kaya-Okur 2019); TIP-seq's front half then direct indexing PCR instead of IVT | untested | `python -m tipseq_plr.protocols.cut_and_tag.run` |
 | **Plate normalization** | [`protocols/normalization/`](tipseq_plr/protocols/normalization) | Qubit HS quant on the Tecan, then normalize a 96-well plate to a uniform concentration | untested | `python -m tipseq_plr.protocols.normalization.run` |
 | **HyDrop scATAC** | [`protocols/hydrop_atac/`](tipseq_plr/protocols/hydrop_atac) | droplet-based scATAC (De Rop 2024); STAR wet chemistry bridged to an Onyx droplet generator by a robot arm | untested | `python -m tipseq_plr.protocols.hydrop_atac.run` |
+| **DNA-seq + UMI (Ultra II)** | [`protocols/dna_ultra2_umi/`](tipseq_plr/protocols/dna_ultra2_umi) | end-to-end NEBNext Ultra II DNA library prep with UMI (NEB E7645/E7103): End Prep, adaptor ligation, SPRI cleanup or two-sided size selection, indexing PCR, cleanup, then a Tecan dsDNA quant that closes the loop into a pass/dilute/fail gate plus a per-well pool plan. TapeStation size QC is a manual operator handoff. | untested | `python -m tipseq_plr.protocols.dna_ultra2_umi.run` |
 
 **Status** is the validation tier (see [Validation](#validation-and-confidence)). All four read `untested`: they run in simulation but have no paired Rhodamine B evidence yet. That is the honest label until a liquid test clears the bar.
 

@@ -20,7 +20,8 @@ def _rfu(v):
 
 
 def test_all_protocols_start_untested():
-    assert set(PROTOCOL_STATUS) == {"tipseq", "cut_and_tag", "normalization", "hydrop_atac"}
+    assert set(PROTOCOL_STATUS) == {"tipseq", "cut_and_tag", "normalization", "hydrop_atac",
+                                    "dna_ultra2_umi"}
     assert all(s["tier"] == ValidationTier.UNTESTED for s in PROTOCOL_STATUS.values())
     assert all(s["liquid_dataset"] is None for s in PROTOCOL_STATUS.values())
 

@@ -42,8 +42,9 @@ class ValidationTier(str, Enum):
 PROTOCOL_STATUS = {
     "tipseq":        {"tier": ValidationTier.UNTESTED, "liquid_dataset": None},
     "cut_and_tag":   {"tier": ValidationTier.UNTESTED, "liquid_dataset": None},
-    "normalization": {"tier": ValidationTier.UNTESTED, "liquid_dataset": None},
-    "hydrop_atac":   {"tier": ValidationTier.UNTESTED, "liquid_dataset": None},
+    "normalization":  {"tier": ValidationTier.UNTESTED, "liquid_dataset": None},
+    "hydrop_atac":    {"tier": ValidationTier.UNTESTED, "liquid_dataset": None},
+    "dna_ultra2_umi": {"tier": ValidationTier.UNTESTED, "liquid_dataset": None},
 }
 
 # Biovalidation is intentionally out of scope for this repo. Records live in a
